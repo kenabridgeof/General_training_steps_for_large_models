@@ -1,0 +1,71 @@
+# 深度学习项目流程 (手机价格分类示例)
+
+## 可调超参数
+
+| 超参数               | 说明                      | 常用推荐值                      |
+| ----------------- | ----------------------- | -------------------------- |
+| `batch_size`      | 每次迭代处理的样本数，影响训练吞吐量与显存占用 | 16、32、64                   |
+| `learning_rate`   | 优化器初始学习率，控制参数更新步长       | 1e-2、1e-3、1e-4             |
+| `optimizer`       | 优化算法类型                  | AdamW、SGD+Momentum         |
+| `epochs`          | 训练轮次总数                  | 50–200                     |
+| `train_val_split` | 训练/验证集比例或 K 折交叉验证数      | 8:2、5-折交叉验证                |
+| `seed`            | 随机种子，用于初始化数据分割、参数初始化等   | 42                         |
+| `hidden_dims`     | 隐藏层神经元规模列表，决定模型容量       | \[128, 64]、\[256, 128, 64] |
+| `dropout_p`       | Dropout 丢弃率，用于抑制过拟合     | 0.1–0.5                    |
+| `weight_decay`    | 权重衰减系数（L2 正则）           | 1e-5–1e-3                  |
+
+---
+
+## 1. 数据加载与预处理
+
+* **数据读取 (Ingestion)**：使用 `pandas.read_csv` 或定制化 ETL 管道，支持 CSV/Parquet/JSON/远程数据库。
+* **数据类型转换 (Type Casting)**：将 DataFrame 转为 NumPy，再使用 `torch.tensor` 转为浮点 (`float32`) 张量和整型 (`int64`) 标签。
+* **数据分割 (Data Splitting)**：利用 `sklearn.model_selection.train_test_split` 或自定义 `torch.utils.data.SubsetRandomSampler`，按 `train_val_split` 生成训练集和验证集。
+* **数据增强 (Augmentation)**：可选流程，如随机水平翻转、归一化、标准化，调用 `torchvision.transforms` 或自定义方法。
+* **封装数据集 (Dataset Wrapping)**：使用 `torch.utils.data.TensorDataset` 或自定义 `torch.utils.data.Dataset` 类，将特征与标签打包。
+* **小批量加载 (DataLoader Initialization)**：构造 `torch.utils.data.DataLoader`，配置 `batch_size`、`shuffle`、`num_workers`、`pin_memory`、`drop_last` 等参数，实现高效并行预取。
+
+---
+
+## 2. 模型定义 (Model Architecture)
+
+* **输入输出维度推断 (I/O Shape Inference)**：根据 `Dataset` 输出确定输入特征数和类别数。
+* **网络组件组合 (Module Composition)**：可选 `nn.Linear`、`nn.Conv2d`、`nn.TransformerEncoder`、`nn.LSTM` 等模块；
+* **激活函数与正则化 (Activation & Regularization)**：插入 `nn.ReLU`/`nn.GELU`，结合 `nn.Dropout`、`nn.BatchNorm1d`/`nn.LayerNorm`。
+* **参数初始化 (Weight Initialization)**：调用 `torch.nn.init.xavier_uniform_`、`kaiming_normal_` 或加载预训练权重（如 Hugging Face checkpoint）。
+* **设备分配 (Device Allocation)**：使用 `model.to(device)`，支持 `DataParallel` 或 `DistributedDataParallel` 多卡训练。
+
+---
+
+## 3. 训练流程 (Training Loop)
+
+* **训练模式切换**：`model.train()` 启用 Dropout/BatchNorm 更新。
+* **损失构建 (Loss Function Selection)**：多分类常用 `nn.CrossEntropyLoss`，回归任务用 `nn.MSELoss`。
+* **优化器配置 (Optimizer Setup)**：如 `torch.optim.AdamW` 或 `torch.optim.SGD(model.parameters(), lr, momentum)`，并配置 `weight_decay`。
+* **学习率调度 (LR Scheduler)**：`torch.optim.lr_scheduler.CosineAnnealingLR`、`StepLR`、`Warmup` + `LinearDecay`。
+* **梯度裁剪 (Gradient Clipping)**：`torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)`。
+* **主训练循环**：
+
+  * 遍历 `DataLoader`：前向 `outputs = model(inputs)` → 计算 `loss` → `loss.backward()` → `optimizer.step()` → `optimizer.zero_grad()`。
+  * 累计训练指标并（可选）通过 TensorBoard/W\&B 记录 `loss`、`lr`、梯度范数等。
+* **检查点保存 (Checkpointing)**：每 N 轮或验证提升时 `torch.save(model.state_dict())`，保留最佳 `best_model.pt`。
+
+---
+
+## 4. 验证与评估 (Validation & Metrics)
+
+* **评估模式切换**：`model.eval()` 并使用 `torch.no_grad()` 禁用梯度。
+* **性能指标计算 (Metrics Computation)**：准确率 (`Accuracy`)、精确率/召回率/F1 (`Precision`/`Recall`/`F1`)、AUC、BLEU、ROUGE 等。
+* **混淆矩阵 (Confusion Matrix)**：调用 `sklearn.metrics.confusion_matrix` 分析错分模式。
+* **分类报告 (Classification Report)**：`sklearn.metrics.classification_report` 输出每类指标。
+* **可视化分析**：使用 TensorBoard、Matplotlib 绘制 PR 曲线、ROC 曲线、样本预测对比图。
+
+---
+
+## 5. 导出与部署 (Export & Deployment)
+
+* **模型持久化 (Model Serialization)**：保存 `state_dict` 或导出 TorchScript (`torch.jit.trace`/`script`)。
+* **格式转换 (Format Conversion)**：ONNX 导出 (`torch.onnx.export`)、TensorRT、OpenVINO 转换。
+* **推理 API 封装**：基于 FastAPI/Flask 封装 `predict()` 接口，支持批量推理。
+* **容器化部署 (Containerization)**：使用 Docker 构建镜像，集成 `requirements.txt` 与环境变量。
+* **监控与持续训练 (Monitoring & Retraining)**：线上日志采集，性能监控，自动触发微调或增量学习管道。
