@@ -1,8 +1,6 @@
-```
-import torch
-import torch.nn as nn
-import math
+### 
 
+```python
 # DemoEmbedding 继承自 nn.Module，是一个“Token→向量”映射模块，通常用于 NLP 模型的词嵌入（word embedding）层。
 
 """
@@ -38,3 +36,8 @@ class DemoEmbedding(nn.Module):
 
     def forward(self, x):
         return self.embed(x) * math.sqrt(self.d_model)
+```
+
+
+
+### 
