@@ -31,9 +31,15 @@
 
 # 二.Encoder
 
+## x.Mask(掩码张量)
+- **函数定义**: `subsequent_mask(size)`
+```
+return 1 - torch.triu(torch.ones(1, size, size, dtype=torch.int), diagonal=1)
+```
+
 ## 3. Attention(注意力计算)
 
-- **函数定义**：`Attention(query, key, value, mask, dropout_p)`
+- **函数定义**：`attention(query, key, value, mask, dropout_p)`
 - **公式**: <img src="https://github.com/user-attachments/assets/e43b185b-bcfb-4635-a279-ae358e2647a5" alt="注意力机制公式" width="320"/>
 - **步骤**:
 ```
