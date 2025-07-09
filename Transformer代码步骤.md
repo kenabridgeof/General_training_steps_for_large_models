@@ -3,7 +3,7 @@
 # 一.Input
 ---
 
-## 1. Embedding
+## 1. Embedding(词嵌入层)
 
 - **类名**：`Embedding`
 - **构造函数**：`__init__(vocab_size, d_model)`
@@ -12,7 +12,7 @@
 
 ---
 
-## 2. PositionEncoding
+## 2. PositionEncoding(位置编码)
 
 - **类名**：`PositionEncoding`
 - **构造函数**：`__init__(d_model, dropout_p, max_len=...)`
@@ -31,7 +31,7 @@
 
 # 二.Encoder
 
-## 3. Attention 计算
+## 3. Attention(注意力计算)
 
 - **函数定义**：`Attention(query, key, value, mask, dropout_p)`
 - **公式**: <img src="https://github.com/user-attachments/assets/e43b185b-bcfb-4635-a279-ae358e2647a5" alt="注意力机制公式" width="320"/>
@@ -52,7 +52,7 @@ return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 ```
 ---
 
-## 4. MultiHeadAttention
+## 4. MultiHeadAttention(多头注意力机制层)
 
 - **类名**：`MultiHeadAttention`
 - **构造函数**：`__init__(head, d_model, dropout_p=...)`
@@ -77,7 +77,7 @@ forward
 
 ---
 
-## 5. FeedForward
+## 5. FeedForward(前馈全连接层)
 
 - **类名**：`FeedForward`
 - **构造函数**：`__init__(d_model, d_ff, dropout_p=...)`
@@ -92,7 +92,7 @@ forward
 
 ---
 
-## 6. LayerNorm
+## 6. LayerNorm(规范化层)
 
 - **类名**：`LayerNorm`
 - **构造函数**：`__init__(features, eps=1e-6)`
@@ -107,7 +107,7 @@ forward
 
 ---
 
-## 7. SubLayerConnection
+## 7. SubLayerConnection(子层连接结构)
 
 - **类名**：`SubLayerConnection`
 - **构造函数**：`__init__(size, dropout_p=...)`
@@ -121,7 +121,7 @@ forward
 
 ---
 
-## 8. EncoderLayer
+## 8. EncoderLayer(编码器层)
 
 - **类名**：`EncoderLayer`
 - **构造函数**：`__init__(size, self_attention, feed_forward, dropout_p)`
@@ -134,7 +134,7 @@ forward
 
 ---
 
-## 9. Encoder
+## 9. Encoder(编码器)
 
 - **类名**：`Encoder`
 - **构造函数**：`__init__(layer, N)`
@@ -151,7 +151,7 @@ forward
 
 ---
 
-## 10. DecoderLayer
+## 10. DecoderLayer(解码器层)
 
 - **类名**：`DecoderLayer`
 - **构造函数**：`__init__(size, self_attention, src_attention, feed_forward, dropout_p)`
@@ -164,7 +164,7 @@ forward
 
 ---
 
-## 11. Decoder
+## 11. Decoder(解码器)
 
 - **类名**：`Decoder`
 - **构造函数**：`__init__(layer, N)`
@@ -178,7 +178,7 @@ forward
 
 ---
 
-## 12. Generator
+## 12. Generator(输出)
 
 - **类名**：`Generator`
 - **构造函数**：`__init__(d_model, vocab_size)`
