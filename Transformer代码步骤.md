@@ -126,7 +126,6 @@ forward
 - **类名**：`EncoderLayer`
 - **构造函数**：`__init__(size, self_attention, feed_forward, dropout_p)`
 - **前向传播函数**: `forward(self, x, mask)`
-- **公式**: 
 - **步骤**:
 ```
 1. 初始化子模块 clones2层SubLayerConnection
