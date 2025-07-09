@@ -31,7 +31,7 @@
 
 # 二.Encoder
 
-## x.Mask(掩码张量)
+## x.mask(掩码张量)
 - **函数定义**: `subsequent_mask(size)`
 ```
 return 1 - torch.triu(torch.ones(1, size, size, dtype=torch.int), diagonal=1)
