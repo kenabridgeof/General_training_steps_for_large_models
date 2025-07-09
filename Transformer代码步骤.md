@@ -17,8 +17,7 @@
 - **类名**：`PositionEncoding`
 - **构造函数**：`__init__(d_model, dropout_p, max_len=...)`
 - **前向传播函数**: `forward(self, x)`
-- **公式**:<img src="https://github.com/user-attachments/assets/92d7e48a-14f9-48ab-a8c2-7bd099b3b7ce" alt="位置编码计算公式" width="320"/>
-
+- **公式**:<img src="https://github.com/user-attachments/assets/f6ba8457-bbf8-4314-8e12-91e2b6d58aab" alt="位置编码计算公式" width="500"/>
 - **步骤**:
 ```
 1.初始化参数
@@ -35,7 +34,7 @@
 ## 3. Attention 计算
 
 - **函数定义**：`Attention(query, key, value, mask, dropout_p)`
-- **公式**: <img src="https://github.com/user-attachments/assets/546f5a83-b56a-4dbd-81c7-edfa95b63168" alt="注意力机制公式" width="320"/>
+- **公式**: <img src="https://github.com/user-attachments/assets/e43b185b-bcfb-4635-a279-ae358e2647a5" alt="注意力机制公式" width="320"/>
 - **步骤**:
 ```
 1.计算维度标量 dₖ
@@ -58,6 +57,7 @@ return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 - **类名**：`MultiHeadAttention`
 - **构造函数**：`__init__(head, d_model, dropout_p=...)`
 - **前向传播函数**: `forward(self, query, key, value, mask=None)`
+- **公式**:<img src="https://github.com/user-attachments/assets/ea220db3-595a-4ff0-8181-64bc12180c34" alt="多头注意力公式" width="400"/>
 - **步骤**:
 ```
 init
@@ -82,8 +82,7 @@ forward
 - **类名**：`FeedForward`
 - **构造函数**：`__init__(d_model, d_ff, dropout_p=...)`
 - **前向传播函数**: `forward(self, x)`
-- **公式**:<img src="https://github.com/user-attachments/assets/e256c18e-d2a8-43b6-b968-e7f0679c7b19" alt="前馈全连接层公式" width="320"/>
-
+- **公式**:<img src="https://github.com/user-attachments/assets/a9aa7e20-4063-4268-a502-ca331506bd8d" alt="前馈全连接层公式" width="320"/>
 - **步骤**:
 ```
 1. 初始化超参数
@@ -98,6 +97,7 @@ forward
 - **类名**：`LayerNorm`
 - **构造函数**：`__init__(features, eps=1e-6)`
 - **前向传播函数**: `forward(self, x)`
+- **公式**: <img src="https://github.com/user-attachments/assets/b80ff74f-b5d6-4fdd-8d74-138f103bac04" alt="层归一化公式" width="280"/>
 - **步骤**:
 ```
 1. 初始化超参数
@@ -112,6 +112,7 @@ forward
 - **类名**：`SubLayerConnection`
 - **构造函数**：`__init__(size, dropout_p=...)`
 - **前向传播函数**: `forward(self, x, sublayer)`
+- **公式**: <img src="https://github.com/user-attachments/assets/cf3910bb-59d1-4c6d-b61e-b257fc04dbb3" alt="残差连接和归一化" width="400"/>
 - **步骤**:
 ```
 1. 初始化超参数 & LayerNorm模块
@@ -125,6 +126,7 @@ forward
 - **类名**：`EncoderLayer`
 - **构造函数**：`__init__(size, self_attention, feed_forward, dropout_p)`
 - **前向传播函数**: `forward(self, x, mask)`
+- **公式**: 
 - **步骤**:
 ```
 1. 初始化子模块 clones2层SubLayerConnection
@@ -143,6 +145,10 @@ forward
 1. 初始化模块 clones N & 调用LayerNorm
 2. 前向计算流程
 ```
+
+---
+
+# 三.Decoder
 
 ---
 
