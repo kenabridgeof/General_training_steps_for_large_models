@@ -14,6 +14,8 @@
 
 - **类名**：`PositionEncoding`
 - **构造函数**：`__init__(d_model, dropout_p, max_len=...)`
+- **公式**:<img src="https://github.com/user-attachments/assets/92d7e48a-14f9-48ab-a8c2-7bd099b3b7ce" alt="位置编码计算公式" width="320"/>
+
 
 ---
 
