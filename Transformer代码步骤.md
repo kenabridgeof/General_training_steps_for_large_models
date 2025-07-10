@@ -62,11 +62,16 @@ return 1 - torch.triu(torch.ones(1, size, size, dtype=torch.int), diagonal=1)
 - **步骤**:
 ```
 1.计算维度标量 dₖ
+  - 取最后一维长度，后面用来做缩放因子。
 2.点积并缩放
+  - 将 Query 和 Key 做矩阵乘法，得到相似度分数矩阵。除以𝑑𝑘防止数值过大导致 softmax 梯度消失。
 3.应用掩码（可选）
+  - if  ?  is not None:
 4.Softmax 归一化
+  - softmax的代码记得dim=-1,得到注意力权重
 5.dropout(可选)
 6.加权求和并返回
+  - 得到中间上下文向量C
 ```
 
 ---
@@ -88,14 +93,23 @@ init
 1. 断言整除判断 assert
 2. 多头拆分维度
 3. 线性层(q, k, v, 融合多头后的输出)
+  - clones()
 4. Dropout
 
 forward
 1. 掩码升维
 2. 获取 batch_size
 3. 线性变换 + 切分多头
+    #    [batch, seq_len, embed_dim] 
+    # → 线性 → [batch, seq_len, embed_dim]
+    # → view → [batch, seq_len, head, dₖ]
+    # → transpose → [batch, head, seq_len, dₖ]
 4. 调用单头注意力函数计算
+    - 返回 shape: [batch, head, seq_len, dₖ]
 5. 拼回多头输出
+    -    [batch, head, seq_len, dₖ] 
+    - → transpose → [batch, seq_len, head, dₖ]
+    - → contiguous.view → [batch, seq_len, embed_dim]
 6. return最后一层线性映射
 ```
 
