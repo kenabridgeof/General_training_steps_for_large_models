@@ -173,8 +173,11 @@ forward
 - **前向传播函数**: `forward(self, x, mask)`
 - **步骤**:
 ```
-1. 初始化子模块 clones2层SubLayerConnection
-2. 前向计算流程 sub_layer[N] 
+1. 初始化子模块
+  -  # 克隆两个 SubLayerConnection（残差+LayerNorm）实例
+2. 前向计算流程 sub_layer[N]
+  - # 1）第一子层：多头自注意力
+  - # 2）第二子层：前馈网络
 ```
 
 ---
@@ -187,7 +190,12 @@ forward
 - **步骤**:
 ```
 1. 初始化模块 clones N & 调用LayerNorm
+  - layer：已构造的 EncoderLayer 实例（包含自注意力＋前馈＋残差＋规范化）。
+  - 用 clones 复制 layer N 份，生成 ModuleList。
+  - 构造最终用的层归一化 LayerNorm，维度和单层保持一致。
 2. 前向计算流程
+  - 循环堆叠：依次将输入 x 和同一 mask 喂入每一个子 EncoderLayer，输出作为下一层输入。
+  - 归一化：所有层处理完毕后，对最终输出做一次 LayerNorm，增强信息稳定性。
 ```
 
 ---
