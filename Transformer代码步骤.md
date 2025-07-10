@@ -32,9 +32,17 @@ import matplotlib.pyplot as plt
 ```
 1.初始化参数
 2.构造位置编码矩阵
+  - 创建全零张量pe [max-len, d_model]
+  - 构造位置索引索引position再升维 [max_len, 1]
+  - 计算频率向量div_term [d_model // 2]
 3.填充偶数&奇数维度
+  - 计算角度矩阵pos_vec=position * div_term [max_len, d_model // 2]
+  - 拆分pe sin/cos
 4.注册为缓冲区(register_buffer)
+  - pe升维,便于后续广播
+  - 使用register_buffer将其加入模型，但不作为可训练参数
 5.前向融合语义向量和位置编码
+  - 将输入 x（形状 [batch, seq_len, d_model]）与对应的前 seq_len 位位置编码相加，再做随机失活
 ```
 
 ---
