@@ -211,8 +211,12 @@ forward
 - **前向传播函数**: `forward(self, y, encoder_output, source_mask, target_mask)`
 - **步骤**:
 ```
-1. 初始化子模块 clones SubLayerConnection
-2. 前向计算流程 N=3
+1. 初始化子模块
+  - clones SubLayerConnection
+  - 目标序列自注意力层
+  - 编码器-解码器交互注意力层
+2. 前向计算流程 N=3个子层
+  - sub_layers[?]
 ```
 
 ---
@@ -227,6 +231,8 @@ forward
 1. 初始化解码器层列表 clones layer N=6
 2. 定义最终规范化 LayerNorm
 3. 前向计算流程
+  -  1）循环堆叠每一层解码器
+  -  2）最终 LayerNorm 归一化
 ```
 
 ---
@@ -235,6 +241,13 @@ forward
 
 - **类名**：`Generator`
 - **构造函数**：`__init__(d_model, vocab_size)`
+- **前向传播函数**: `forward(self, x)`
+- **步骤**:
+```
+1. 初始化超参数
+2. 定义线性层
+3. 前向计算
+```
 
 ---
 
