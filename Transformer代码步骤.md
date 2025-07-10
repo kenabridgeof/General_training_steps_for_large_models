@@ -248,6 +248,23 @@ forward
 2. 定义线性层
 3. 前向计算
 ```
-
 ---
 
+# 四. 整合Transformer全流程
+
+- **类名**：`EncoderToDecoder`
+- **构造函数**：`___init__(self, encoder, decoder, source_embed, target_embed, generator)`
+- **前向传播函数**: `forward(self, source_x, target_y, source_mask1, source_mask2, target_mask)`
+- **步骤**:
+```
+1. 初始化子模块
+2. 前向计算流程
+        #  source_x:代表编码器的输入：[batch_size, seq_len]-->[2, 4]
+        #  target_y:代表解码器的输入：[batch_size, seq_len]-->[2, 6]
+        #  source_mask1:代表编码器部分的padding mask：[head, source_seq_len, source_seq_len]-->[8, 4, 4]
+        #  source_mask2:代表解码器（第二子层）部分的padding mask：[head, target_seq_len, source_seq_len]-->[8, 6, 4]
+        #  target_mask:代表解码器部分的sentence mask：[head, target_seq_len, target_seq_len]-->[8, 6, 6]
+```
+
+---
+---
