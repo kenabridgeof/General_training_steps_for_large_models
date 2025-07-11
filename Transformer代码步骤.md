@@ -78,6 +78,7 @@ return 1 - torch.triu(torch.ones(1, size, size, dtype=torch.int), diagonal=1)
 ---
 ## x.工具函数clones
 ```
+module, N
 return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 ```
 ---
