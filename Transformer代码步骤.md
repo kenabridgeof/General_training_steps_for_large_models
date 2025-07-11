@@ -94,7 +94,7 @@ return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 init
 1. 断言整除判断 assert
 2. 多头拆分维度
-3. 线性层(q, k, v, 融合多头后的输出)
+3. 线性层(q, k, v, 融合多头后的输出) 记得那张图, 4个线性层,由512 * 512组成
   - clones()
 4. Dropout
 
