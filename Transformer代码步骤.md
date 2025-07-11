@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 ---
 
 ## 2. PositionEncoding(位置编码)
-
+作用：为 Transformer 提供位置编码（Positional Encoding），让模型知道序列中每个 token 的位置信息。
 - **类名**：`PositionEncoding`
 - **构造函数**：`__init__(d_model, dropout_p, max_len=...)`
 - **前向传播函数**: `forward(self, x)`
@@ -32,11 +32,11 @@ import matplotlib.pyplot as plt
 ```
 1.初始化参数
 2.构造位置编码矩阵
-  - 创建全零张量pe [max-len, d_model]
-  - 构造位置索引索引position再升维 [max_len, 1]
-  - 计算频率向量div_term [d_model // 2]
+  - 创建全零张量pe [max-len, d_model] -> [60, 512]
+  - 构造位置索引索引position再升维 [max_len, 1] ->[60, 1] 每行是一个位置 pos，从 0 到 59。
+  - 计算频率缩放向量(就是公式中的被除数计算)  ->[256]
 3.填充偶数&奇数维度
-  - 计算角度矩阵pos_vec=position * div_term [max_len, d_model // 2]
+  - 计算角度矩阵pos_vec=position * div_term     [max_len, d_model // 2] ->[60, 256]
   - 拆分pe sin/cos
 4.注册为缓冲区(register_buffer)
   - pe升维,便于后续广播
