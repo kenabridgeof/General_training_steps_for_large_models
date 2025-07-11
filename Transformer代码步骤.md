@@ -43,6 +43,7 @@ import matplotlib.pyplot as plt
   - 使用register_buffer将其加入模型，但不作为可训练参数
 5.前向融合语义向量和位置编码
   - 将输入 x（形状 [batch, seq_len, d_model]）与对应的前 seq_len 位位置编码相加，再做随机失活
+    只取前 𝐿个位置的编码，避免将超过实际句长的“多余”位置编码加进来。
 ```
 
 ---
